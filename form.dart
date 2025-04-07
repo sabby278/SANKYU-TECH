@@ -6,13 +6,24 @@ class MyFormPage extends StatefulWidget {
 }
 
 class _MyFormPageState extends State<MyFormPage> {
-  final _formKey = GlobalKey<FormState>(); // Unique key for the form
+  final _formKey = GlobalKey<FormState>();
 
-  TextEditingController customerNameController = TextEditingController();
-  TextEditingController icNumberController = TextEditingController();
-  TextEditingController tinNumberController = TextEditingController();
-  TextEditingController phoneNumberController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
+  // Controllers with default values
+  TextEditingController customerNameController = TextEditingController(
+    text: "Abu bin Ali",
+  );
+  TextEditingController icNumberController = TextEditingController(
+    text: "123456-78-9012",
+  );
+  TextEditingController tinNumberController = TextEditingController(
+    text: "123456-78-9012",
+  );
+  TextEditingController phoneNumberController = TextEditingController(
+    text: "01 234 5678",
+  );
+  TextEditingController emailController = TextEditingController(
+    text: "email@address.com",
+  );
   TextEditingController address1Controller = TextEditingController();
   TextEditingController address2Controller = TextEditingController();
   TextEditingController address3Controller = TextEditingController();
@@ -29,14 +40,14 @@ class _MyFormPageState extends State<MyFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Create Customer"),
+        centerTitle: true,
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
       ),
-
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(14.0),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -45,7 +56,11 @@ class _MyFormPageState extends State<MyFormPage> {
               children: [
                 _buildTextField("Customer Name", customerNameController),
                 SizedBox(height: 10),
-                Text("Identification Type"),
+
+                Text(
+                  "Identification Type",
+                  style: TextStyle(color: Colors.grey),
+                ),
                 Row(
                   children: [
                     _buildRadioButton("IC No."),
@@ -54,23 +69,33 @@ class _MyFormPageState extends State<MyFormPage> {
                   ],
                 ),
                 SizedBox(height: 10),
+
                 _buildTextField("IC Number", icNumberController),
                 SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Handle form submission
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-                  child: Text(
-                    "Submit Ic",
-                    style: TextStyle(color: Colors.white),
+
+                // "Check Form" Button
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Handle IC verification
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                    ),
+                    child: Text(
+                      "Check Form",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ),
                 SizedBox(height: 10),
+
                 _buildTextField("TIN Number", tinNumberController),
                 SizedBox(height: 10),
+
+                // Phone Number with Country Code
+                Text("Phone Number", style: TextStyle(color: Colors.grey)),
                 Row(
                   children: [
                     DropdownButton<String>(
@@ -89,20 +114,24 @@ class _MyFormPageState extends State<MyFormPage> {
                           }).toList(),
                     ),
                     SizedBox(width: 10),
-                    Expanded(
-                      child: _buildTextField(
-                        "Phone Number",
-                        phoneNumberController,
-                      ),
-                    ),
+                    Expanded(child: _buildTextField("", phoneNumberController)),
                   ],
                 ),
                 SizedBox(height: 10),
+
                 _buildTextField("Email Address", emailController),
                 SizedBox(height: 10),
+
                 _buildTextField("Address 1", address1Controller),
+                SizedBox(height: 10),
+
                 _buildTextField("Address 2", address2Controller),
+                SizedBox(height: 10),
+
                 _buildTextField("Address 3", address3Controller),
+                SizedBox(height: 10),
+
+                // City & Postcode in one row
                 Row(
                   children: [
                     Expanded(child: _buildTextField("City", cityController)),
@@ -113,6 +142,8 @@ class _MyFormPageState extends State<MyFormPage> {
                   ],
                 ),
                 SizedBox(height: 10),
+
+                // State Dropdown
                 DropdownButtonFormField<String>(
                   value: selectedState,
                   onChanged: (String? newValue) {
@@ -120,6 +151,16 @@ class _MyFormPageState extends State<MyFormPage> {
                       selectedState = newValue!;
                     });
                   },
+                  decoration: InputDecoration(
+                    labelText: "State",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
                   items:
                       [
                         "Choose State",
@@ -143,12 +184,28 @@ class _MyFormPageState extends State<MyFormPage> {
                       }).toList(),
                 ),
                 SizedBox(height: 10),
+
+                // Country (Readonly)
                 TextFormField(
                   initialValue: selectedCountry,
                   readOnly: true,
-                  decoration: InputDecoration(labelText: "Country"),
+                  decoration: InputDecoration(
+                    labelText: "Country",
+                    labelStyle: TextStyle(color: Colors.grey),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                  style: TextStyle(
+                    color: Color(0xFF32556E),
+                  ), // Changed to specific blue
                 ),
                 SizedBox(height: 20),
+
+                // Submit Button
                 SizedBox(
                   width: double.infinity,
                   height: 50,
@@ -175,18 +232,38 @@ class _MyFormPageState extends State<MyFormPage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        border: OutlineInputBorder(),
-        filled: true, // Enables background color
-        fillColor: Colors.grey[200], // Sets input box background to grey
-      ),
+  // Text Field Builder
+  Widget _buildTextField(String title, TextEditingController controller) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ✅ Label is now above the input box
+        Text(
+          title,
+          style: TextStyle(
+            color: Colors.grey,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        SizedBox(height: 5), // Space between label and input box
+        TextFormField(
+          controller: controller,
+          decoration: InputDecoration(
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+              borderSide: BorderSide.none,
+            ),
+            filled: true,
+            fillColor: Colors.grey[200], // Grey background
+          ),
+          style: TextStyle(color: Color(0xFF32556E)), // Blue text color
+        ),
+      ],
     );
   }
 
+  // Radio Button Builder
   Widget _buildRadioButton(String value) {
     return Row(
       children: [
@@ -204,3 +281,4 @@ class _MyFormPageState extends State<MyFormPage> {
     );
   }
 }
+
